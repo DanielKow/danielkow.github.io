@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daniel Kowalski — wizytówka</title>
+<meta name="description" content="Daniel Kowalski — 8 lat w ekosystemie .NET, backend, architektura zdarzeniowa i computer vision. Doświadczenie zawodowe jako karty Event Modeling.">
+<meta name="color-scheme" content="dark light">
+<meta property="og:title" content="Daniel Kowalski">
+<meta property="og:description" content="Daniel Kowalski — 8 lat w ekosystemie .NET, backend, architektura zdarzeniowa i computer vision. Doświadczenie zawodowe jako karty Event Modeling.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2718%27%20fill%3D%27%23f3b25c%27/%3E%3C/svg%3E">
+<style>
+  :root {
+    /* dark is the default theme */
+    --canvas: #0f141c;
+    --dot: rgba(150, 176, 220, 0.07);
+    --ink: #e8edf6;
+    --ink-soft: #98a4bc;
+    --line: #29323f;
+    --surface: #161d28;
+    --surface-border: rgba(255, 255, 255, 0.08);
+
+    --event-bg: #f3b25c;
+    --event-edge: #e19a3a;
+    --event-ink: #3c2a10;
+
+    --command-bg: #8fb6e2;
+    --command-edge: #6f9fd4;
+    --command-ink: #142942;
+
+    --read-bg: #8bc59a;
+    --read-edge: #66ab78;
+    --read-ink: #163a22;
+
+    --chip-bg: rgba(255, 255, 255, 0.07);
+    --chip-ink: #c0cadb;
+    --chip-edge: rgba(255, 255, 255, 0.10);
+
+    --shadow: 0 9px 24px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.34);
+    --shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.58), 0 4px 10px rgba(0, 0, 0, 0.4);
+
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --canvas: #0f141c; --dot: rgba(150, 176, 220, 0.07); --ink: #e8edf6; --ink-soft: #98a4bc;
+      --line: #29323f; --surface: #161d28; --surface-border: rgba(255, 255, 255, 0.08);
+      --chip-bg: rgba(255, 255, 255, 0.07); --chip-ink: #c0cadb; --chip-edge: rgba(255, 255, 255, 0.10);
+      --shadow: 0 9px 24px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.34);
+      --shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.58), 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --canvas: #e7ebf2; --dot: rgba(40, 56, 92, 0.08); --ink: #1a2230; --ink-soft: #58627a;
+    --line: #c4cdda; --surface: #ffffff; --surface-border: rgba(20, 30, 50, 0.09);
+    --chip-bg: rgba(26, 34, 48, 0.06); --chip-ink: #47526b; --chip-edge: rgba(26, 34, 48, 0.10);
+    --shadow: 0 7px 18px rgba(23, 32, 52, 0.16), 0 1px 3px rgba(23, 32, 52, 0.12);
+    --shadow-lift: 0 16px 34px rgba(23, 32, 52, 0.22), 0 3px 8px rgba(23, 32, 52, 0.14);
+  }
+  :root[data-theme="dark"] {
+    --canvas: #0f141c; --dot: rgba(150, 176, 220, 0.07); --ink: #e8edf6; --ink-soft: #98a4bc;
+    --line: #29323f; --surface: #161d28; --surface-border: rgba(255, 255, 255, 0.08);
+    --chip-bg: rgba(255, 255, 255, 0.07); --chip-ink: #c0cadb; --chip-edge: rgba(255, 255, 255, 0.10);
+    --shadow: 0 9px 24px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.34);
+    --shadow-lift: 0 20px 40px rgba(0, 0, 0, 0.58), 0 4px 10px rgba(0, 0, 0, 0.4);
+  }
+
+  html { background: var(--canvas); }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background-color: var(--canvas);
+    background-image: radial-gradient(var(--dot) 1.4px, transparent 1.4px);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1020px; margin: 0 auto; padding: 0 22px 88px; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 22px 0 8px; gap: 14px; }
+  .brandmark { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); }
+  .controls { display: flex; align-items: center; gap: 10px; }
+
+  .langtog { display: inline-flex; align-items: center; border: 1px solid var(--surface-border); border-radius: 999px; background: var(--surface); box-shadow: var(--shadow); overflow: hidden; padding: 0; cursor: pointer; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; }
+  .langtog span { display: block; padding: 8px 12px; color: var(--ink-soft); }
+  :root[lang="pl"] .langtog span[data-l="pl"], :root[lang="en"] .langtog span[data-l="en"] { background: var(--command-bg); color: var(--command-ink); }
+  .langtog:focus-visible { outline: 3px solid var(--command-edge); outline-offset: 2px; }
+
+  .toggle { display: inline-flex; align-items: center; justify-content: center; background: var(--surface); color: var(--ink); border: 1px solid var(--surface-border); border-radius: 999px; padding: 9px 11px; cursor: pointer; box-shadow: var(--shadow); }
+  .toggle svg { width: 16px; height: 16px; display: block; }
+  .toggle:focus-visible { outline: 3px solid var(--command-edge); outline-offset: 2px; }
+  .toggle .sun { display: none; }
+  .toggle .moon { display: block; }
+  :root[data-theme="light"] .toggle .sun { display: block; }
+  :root[data-theme="light"] .toggle .moon { display: none; }
+
+  .hero { padding: 40px 0 26px; }
+  .hero h1 { font-size: clamp(2.6rem, 7vw, 4.4rem); line-height: 0.98; margin: 0; letter-spacing: -0.02em; font-weight: 800; text-wrap: balance; }
+  .hero .tag { font-size: clamp(1.05rem, 2.4vw, 1.3rem); color: var(--ink-soft); margin: 18px 0 0; max-width: 40ch; }
+  .hero .tag .tag2 { display: block; }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 26px; font-family: var(--mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.02em; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch { width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }
+  .sw-event { background: var(--event-bg); }
+  .sw-cmd { background: var(--command-bg); }
+  .sw-read { background: var(--read-bg); }
+
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .links a { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); color: var(--ink); text-decoration: none; border: 1px solid var(--surface-border); border-radius: 10px; padding: 10px 15px; font-size: 14px; font-weight: 600; box-shadow: var(--shadow); transition: transform .18s ease, box-shadow .18s ease; }
+  .links a:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+  .links a:focus-visible { outline: 3px solid var(--command-edge); outline-offset: 2px; }
+  .links svg { width: 17px; height: 17px; }
+
+  .sec { margin-top: 58px; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 26px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+  .sec-head h2 { font-size: 1.5rem; margin: 0; letter-spacing: -0.01em; }
+  .sec-head .k { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.1em; text-transform: uppercase; margin-left: auto; }
+
+  .timeline { position: relative; padding-left: 30px; }
+  .timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+  .role { position: relative; margin-bottom: 46px; }
+  .role::before { content: ""; position: absolute; left: -30px; top: 12px; width: 16px; height: 16px; border-radius: 50%; background: var(--command-bg); box-shadow: 0 0 0 4px var(--canvas), inset 0 0 0 2px var(--command-edge); }
+
+  .note { position: relative; border-radius: 4px; box-shadow: var(--shadow); transition: transform .22s cubic-bezier(.2,.7,.3,1), box-shadow .22s ease; }
+  .note.command { background: var(--command-bg); color: var(--command-ink); border-top: 3px solid var(--command-edge); padding: 16px 18px; max-width: 560px; }
+  .note.command .co { font-size: 1.22rem; font-weight: 800; letter-spacing: -0.01em; }
+  .note.command .ti { font-size: 1rem; font-weight: 600; margin-top: 2px; }
+  .note.command .meta { font-family: var(--mono); font-size: 12px; margin-top: 9px; letter-spacing: 0.02em; opacity: 0.82; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+
+  .events { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-top: 16px; }
+  .note.event { background: var(--event-bg); color: var(--event-ink); border-top: 3px solid var(--event-edge); padding: 15px 16px; font-size: 0.95rem; font-weight: 500; }
+  .note.event .lab { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.62; display: block; margin-bottom: 6px; }
+  .note.event:hover, .note.read:hover { transform: translateY(-5px) rotate(0deg) !important; box-shadow: var(--shadow-lift); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 15px; }
+  .chip { font-family: var(--mono); font-size: 11.5px; color: var(--chip-ink); background: var(--chip-bg); border: 1px solid var(--chip-edge); border-radius: 6px; padding: 4px 9px; letter-spacing: 0.01em; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .note.read { background: var(--read-bg); color: var(--read-ink); border-top: 3px solid var(--read-edge); padding: 16px 18px; }
+  .note.read h3 { margin: 0; font-size: 1.05rem; }
+  .note.read .meta { font-family: var(--mono); font-size: 12px; margin-top: 6px; opacity: 0.85; }
+  .note.read p { margin: 9px 0 0; font-size: 0.92rem; }
+  .note.read .thesis { font-size: 0.82rem; opacity: 0.92; font-style: italic; margin-top: 9px; }
+
+  .foot { margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; color: var(--ink-soft); font-family: var(--mono); font-size: 12px; }
+
+  .reveal { opacity: 0; transform: translateY(22px) rotate(0deg); }
+  .reveal.in { opacity: 1; transform: translateY(0) var(--rot, rotate(0deg)); transition: opacity .5s ease, transform .55s cubic-bezier(.2,.75,.3,1); }
+  .note.command.reveal.in { --rot: rotate(-0.6deg); }
+  .events .note:nth-child(3n+1) { --rot: rotate(-1.4deg); }
+  .events .note:nth-child(3n+2) { --rot: rotate(1deg); }
+  .events .note:nth-child(3n+3) { --rot: rotate(-0.5deg); }
+  .cards .note:nth-child(2n) { --rot: rotate(1deg); }
+  .cards .note:nth-child(2n+1) { --rot: rotate(-1deg); }
+  .note:hover { z-index: 3; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .reveal.in { transition: none; }
+    .note, .links a { transition: none !important; }
+    .note:hover { transform: none !important; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 0 16px 64px; }
+    .events, .cards { grid-template-columns: 1fr; }
+    .timeline { padding-left: 24px; }
+    .role::before { left: -24px; }
+    .note.command { max-width: none; }
+    .sec { margin-top: 44px; }
+    .hero { padding: 28px 0 18px; }
+    .brandmark { display: none; }
+    .foot { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <span class="brandmark" data-pl="wizytówka" data-en="business card">wizytówka</span>
+    <div class="controls">
+      <button class="langtog" id="langBtn" aria-label="Przełącz język / Switch language">
+        <span data-l="pl">PL</span>
+        <span data-l="en">EN</span>
+      </button>
+      <button class="toggle" id="themeBtn" aria-label="Motyw / Theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>Daniel Kowalski</h1>
+    <p class="tag"><span data-pl="Od 8 lat w ekosystemie .NET" data-en="8 years in the .NET ecosystem">Od 8 lat w ekosystemie .NET</span><span class="tag2" data-pl="backend, architektura zdarzeniowa i rozwiązania z pogranicza computer vision." data-en="backend, event-driven architecture and computer vision.">backend, architektura zdarzeniowa i rozwiązania z pogranicza computer vision.</span></p>
+    <div class="legend">
+      <span><i class="swatch sw-event"></i> <span data-pl="efekty" data-en="results">efekty</span></span>
+      <span><i class="swatch sw-cmd"></i> <span data-pl="role" data-en="roles">role</span></span>
+      <span><i class="swatch sw-read"></i> <span data-pl="edukacja i prelekcje" data-en="education &amp; talks">edukacja i prelekcje</span></span>
+    </div>
+    <nav class="links">
+      <a href="https://github.com/DanielKow" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.74-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5z"/></svg>
+        GitHub
+      </a>
+      <a href="https://www.linkedin.com/in/kowalski-net/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0z"/></svg>
+        LinkedIn
+      </a>
+      <a href="mailto:dankow.kontakt@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m3 6 9 6 9-6"/></svg>
+        <span>dankow.kontakt@gmail.com</span>
+      </a>
+    </nav>
+  </header>
+
+  <section class="sec">
+    <div class="sec-head"><h2 data-pl="Doświadczenie" data-en="Experience">Doświadczenie</h2><span class="k" data-pl="2018 → dziś" data-en="2018 → now">2018 → dziś</span></div>
+    <div class="timeline" id="tl">
+
+      <div class="role">
+        <div class="note command reveal">
+          <div class="co">RocketWelder</div>
+          <div class="ti">Head of Software Development</div>
+          <div class="meta"><span>04.2026 – obecnie</span><span data-pl="zdalnie" data-en="remote">zdalnie</span></div>
+        </div>
+        <div class="events">
+          <div class="note event reveal" data-pl="Natywny odtwarzacz obrazu na żywo, Full HD 30 FPS, opóźnienie poniżej 100 ms. Na Raspberry Pi zużywa ~25% jednego rdzenia CPU i ~220 MB RAM." data-en="Native live image player, Full HD 30 FPS, latency below 100 ms. On Raspberry Pi it uses ~25% of one CPU core and ~220 MB RAM.">Natywny odtwarzacz obrazu na żywo, Full HD 30 FPS, opóźnienie poniżej 100 ms. Na Raspberry Pi zużywa ~25% jednego rdzenia CPU i ~220 MB RAM.</div>
+          <div class="note event reveal" data-pl="Kalibracja eye-in-hand z błędem poniżej 0,5 mm. Dedykowane UI umożliwiło bardzo szybką i sprawną kalibrację: pełną w kilkanaście minut, rekalibrację w parę minut." data-en="Eye-in-hand calibration with an error below 0.5 mm. A dedicated UI made calibration very fast and smooth: full in a dozen or so minutes, recalibration in a few minutes.">Kalibracja eye-in-hand z błędem poniżej 0,5 mm. Dedykowane UI umożliwiło bardzo szybką i sprawną kalibrację: pełną w kilkanaście minut, rekalibrację w parę minut.</div>
+          <div class="note event reveal" data-pl="Symulator robota i środowisko 3D zbudowane w ok. 2 dni dzięki pracy z agentami AI." data-en="Robot simulator and 3D environment built in about 2 days working with AI agents.">Symulator robota i środowisko 3D zbudowane w ok. 2 dni dzięki pracy z agentami AI.</div>
+          <div class="note event reveal" data-pl="Orkiestracja kilku zespołów agentów AI oraz projektowanie ich procesów pracy i serwerów MCP." data-en="Orchestrating several AI agent teams and designing their workflows and MCP servers.">Orkiestracja kilku zespołów agentów AI oraz projektowanie ich procesów pracy i serwerów MCP.</div>
+        </div>
+        <div class="chips"><span class="chip">C#/.NET 10</span><span class="chip">Blazor</span><span class="chip">KurrentDB</span><span class="chip">C++</span><span class="chip">Computer Vision</span></div>
+      </div>
+
+      <div class="role">
+        <div class="note command reveal">
+          <div class="co">Changelog.pl</div>
+          <div class="ti">Tech Lead</div>
+          <div class="meta"><span>07.2023 – 03.2026</span><span>Wrocław</span></div>
+        </div>
+        <div class="events">
+          <div class="note event reveal" data-pl="Prowadzenie zespołu tworzącego integracje ERP z eCommerce." data-en="Leading a team building ERP and eCommerce integrations.">Prowadzenie zespołu tworzącego integracje ERP z eCommerce.</div>
+          <div class="note event reveal" data-pl="Narzędzie migracji z .NET Framework do .NET 8 - przepięcie klienta z tygodni do kilku dni." data-en="A .NET Framework to .NET 8 migration tool - client migration cut from weeks to a few days.">Narzędzie migracji z .NET Framework do .NET 8 - przepięcie klienta z tygodni do kilku dni.</div>
+          <div class="note event reveal" data-pl="Autorski system uruchamiania i harmonogramowania integracji." data-en="A custom integration runtime and scheduler.">Autorski system uruchamiania i harmonogramowania integracji.</div>
+          <div class="note event reveal" data-pl="Automatyzacja migracji 6 lat historii zamówień i comiesięcznych raportów rentowności." data-en="Automated migration of 6 years of order history and monthly profitability reports.">Automatyzacja migracji 6 lat historii zamówień i comiesięcznych raportów rentowności.</div>
+        </div>
+        <div class="chips"><span class="chip">C#/.NET</span><span class="chip">Blazor</span><span class="chip">.NET MAUI</span><span class="chip">React</span><span class="chip">PostgreSQL</span><span class="chip">SQL Server</span><span class="chip">DDD</span><span class="chip">CQRS</span></div>
+      </div>
+
+      <div class="role">
+        <div class="note command reveal">
+          <div class="co">ModelingEvolution</div>
+          <div class="ti">Software Engineer</div>
+          <div class="meta"><span>06.2022 – 07.2023</span><span data-pl="zdalnie" data-en="remote">zdalnie</span></div>
+        </div>
+        <div class="events">
+          <div class="note event reveal" data-pl="Platforma do warsztatów Event Modeling i Event Storming." data-en="A platform for Event Modeling and Event Storming workshops.">Platforma do warsztatów Event Modeling i Event Storming.</div>
+          <div class="note event reveal" data-pl="Dynamiczne przełączanie między WASM a Server Side, przed pojawieniem się render-mode w Blazorze." data-en="Dynamic switching between WASM and Server Side, before render modes existed in Blazor.">Dynamiczne przełączanie między WASM a Server Side, przed pojawieniem się render-mode w Blazorze.</div>
+          <div class="note event reveal" data-pl="Aplikacja mobilna .NET MAUI do podglądu spawania na żywo, z opóźnieniem poniżej 100 ms." data-en="A .NET MAUI mobile app for live welding preview, with latency below 100 ms.">Aplikacja mobilna .NET MAUI do podglądu spawania na żywo, z opóźnieniem poniżej 100 ms.</div>
+        </div>
+        <div class="chips"><span class="chip">C#/.NET</span><span class="chip">Blazor</span><span class="chip">EventStore</span><span class="chip">.NET MAUI</span><span class="chip">C++</span><span class="chip">Computer Vision</span></div>
+      </div>
+
+      <div class="role">
+        <div class="note command reveal">
+          <div class="co">SellIntegro</div>
+          <div class="ti">Regular Integration Developer</div>
+          <div class="meta"><span>10.2020 – 06.2022</span><span>Wrocław</span></div>
+        </div>
+        <div class="events">
+          <div class="note event reveal" data-pl="Dziesiątki integracji ERP z eCommerce: Comarch, Subiekt, Enova, Allegro, Shopify, WooCommerce i wiele więcej." data-en="Dozens of ERP and eCommerce integrations: Comarch, Subiekt, Enova, Allegro, Shopify, WooCommerce and many more.">Dziesiątki integracji ERP z eCommerce: Comarch, Subiekt, Enova, Allegro, Shopify, WooCommerce i wiele więcej.</div>
+          <div class="note event reveal" data-pl="Modularyzacja rozwiązań - nowe integracje składane z gotowych komponentów." data-en="Modularized the solutions - new integrations assembled from ready-made components.">Modularyzacja rozwiązań - nowe integracje składane z gotowych komponentów.</div>
+        </div>
+        <div class="chips"><span class="chip">C#/.NET Framework</span><span class="chip">PHP</span><span class="chip">SQL Server</span><span class="chip">REST / SOAP / COM API</span></div>
+      </div>
+
+      <div class="role">
+        <div class="note command reveal">
+          <div class="co">IT Develop</div>
+          <div class="ti" data-pl="Programista .NET" data-en=".NET Developer">Programista .NET</div>
+          <div class="meta"><span>06.2018 – 09.2020</span><span>Opole</span></div>
+        </div>
+        <div class="events">
+          <div class="note event reveal" data-pl="Architektura i prowadzenie 4-osobowego zespołu przy produkcie SaaS." data-en="Architecture and leading a 4-person team on a SaaS product.">Architektura i prowadzenie 4-osobowego zespołu przy produkcie SaaS.</div>
+          <div class="note event reveal" data-pl="Integracja płatności PayPal i wdrożenie rozwiązania na produkcję." data-en="PayPal payment integration and deployment to production.">Integracja płatności PayPal i wdrożenie rozwiązania na produkcję.</div>
+          <div class="note event reveal" data-pl="Opieka nad ok. 10 praktykantami, których kod trafiał na produkcję." data-en="Mentoring around 10 interns whose code went to production.">Opieka nad ok. 10 praktykantami, których kod trafiał na produkcję.</div>
+        </div>
+        <div class="chips"><span class="chip">C#/.NET Core</span><span class="chip">PostgreSQL</span><span class="chip">RabbitMQ</span><span class="chip">Angular</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><h2 data-pl="Wykształcenie" data-en="Education">Wykształcenie</h2></div>
+    <div class="cards">
+      <div class="note read reveal">
+        <h3>Uniwersytet WSB Merito, Wrocław</h3>
+        <div class="meta" data-pl="Informatyka, mgr · 2023–2026" data-en="Computer Science, MSc · 2023–2026">Informatyka, mgr · 2023–2026</div>
+        <p data-pl="Specjalność: uczenie maszynowe i sztuczna inteligencja." data-en="Specialization: machine learning and artificial intelligence.">Specjalność: uczenie maszynowe i sztuczna inteligencja.</p>
+        <p class="thesis" data-pl="Praca magisterska: „Analiza porównawcza skuteczności klasycznych algorytmów harmonogramowania zadań w zestawieniu z algorytmami opartymi na Sztucznej Inteligencji w heterogenicznym środowisku chmury obliczeniowej”." data-en="Master's thesis: “A comparative analysis of classic task scheduling algorithms versus AI-based algorithms in a heterogeneous cloud computing environment.”">Praca magisterska: „Analiza porównawcza skuteczności klasycznych algorytmów harmonogramowania zadań w zestawieniu z algorytmami opartymi na Sztucznej Inteligencji w heterogenicznym środowisku chmury obliczeniowej”.</p>
+      </div>
+      <div class="note read reveal">
+        <h3>Uniwersytet Dolnośląski DSW, Wrocław</h3>
+        <div class="meta" data-pl="Informatyka, inż. · 2020–2023" data-en="Computer Science, BEng · 2020–2023">Informatyka, inż. · 2020–2023</div>
+        <p data-pl="Specjalność: inżynier aplikacji i systemów mobilnych." data-en="Specialization: mobile applications and systems engineering.">Specjalność: inżynier aplikacji i systemów mobilnych.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><h2 data-pl="Prelekcje i społeczność" data-en="Talks &amp; community">Prelekcje i społeczność</h2></div>
+    <div class="cards">
+      <div class="note read reveal">
+        <h3 data-pl="Współorganizator Wroc.NET" data-en="Wroc.NET Co-organizer">Współorganizator Wroc.NET</h3>
+        <div class="meta" data-pl="Wrocławska Grupa .NET · od 2024" data-en="Wrocław .NET Group · since 2024">Wrocławska Grupa .NET · od 2024</div>
+        <p data-pl="Pozyskiwanie prelegentów i sponsorów, wsparcie techniczne wydarzeń." data-en="Sourcing speakers and sponsors, technical support during events.">Pozyskiwanie prelegentów i sponsorów, wsparcie techniczne wydarzeń.</p>
+      </div>
+      <div class="note event talk reveal">
+        <span class="lab" data-pl="prelekcja" data-en="talk">prelekcja</span>„Journey from discovery to delivery with Event Modeling” - Wroc.NET #155.
+      </div>
+      <div class="note event talk reveal">
+        <span class="lab" data-pl="prelekcja" data-en="talk">prelekcja</span>„Transition from Event Storming to Event Modeling” - Wroc.NET #158, Wrocław JUG #210.
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Daniel Kowalski · Wrocław</span>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+
+    // theme
+    var btn = document.getElementById('themeBtn');
+    function applyTheme(t) { if (t === 'light' || t === 'dark') root.setAttribute('data-theme', t); }
+    var storedTheme = null;
+    try { storedTheme = localStorage.getItem('theme'); } catch (e) {}
+    applyTheme(storedTheme || 'dark');
+    btn.addEventListener('click', function () {
+      var dark = root.getAttribute('data-theme') === 'dark' ||
+        (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      var next = dark ? 'light' : 'dark';
+      applyTheme(next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    });
+
+    // language
+    var langBtn = document.getElementById('langBtn');
+    var i18n = document.querySelectorAll('[data-pl]');
+    function fixOrphans(s) {
+      return s.replace(/(^|[\s(„"\-–])([aiouwzAIOUWZ]) /g, '$1$2 ');
+    }
+    function applyLang(l) {
+      l = (l === 'en') ? 'en' : 'pl';
+      root.setAttribute('lang', l);
+      i18n.forEach(function (el) {
+        var v = el.getAttribute('data-' + l);
+        if (v !== null) el.textContent = fixOrphans(v);
+      });
+      try { localStorage.setItem('lang', l); } catch (e) {}
+    }
+    var savedLang = 'pl';
+    try { savedLang = localStorage.getItem('lang') || 'pl'; } catch (e) {}
+    applyLang(savedLang);
+    langBtn.addEventListener('click', function () {
+      applyLang(root.getAttribute('lang') === 'en' ? 'pl' : 'en');
+    });
+
+    // reveal
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var notes = document.querySelectorAll('.reveal');
+    if (reduce || !('IntersectionObserver' in window)) {
+      notes.forEach(function (n) { n.classList.add('in'); });
+    } else {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            var el = e.target, group = el.parentElement;
+            var idx = Array.prototype.indexOf.call(group.children, el);
+            el.style.transitionDelay = Math.min(idx, 6) * 70 + 'ms';
+            el.classList.add('in');
+            io.unobserve(el);
+          }
+        });
+      }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
+      notes.forEach(function (n) { io.observe(n); });
+    }
+  })();
+</script>
+</body>
+</html>
